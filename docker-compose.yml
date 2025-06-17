@@ -1,1 +1,8 @@
-
+---
+version: "3"
+services:
+    zomato:
+       container_name: app-container
+       image: saikumar1817/project-4:mydockerimage
+       ports:
+         - 1234:3000
