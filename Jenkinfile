@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+    tools {
+        nodejs "node16"
+        jdk "jdk17"
+    }
+    stages {
+        stage("workspace") {
+            steps {
+                cleanWs()
+            }
+        }
+        stage("checkout from git") {
+            steps {
+                git branch: 'main', url: 'https://github.com/saiflm17/project-4.git'
+            }
+        }
+        stage("build the code") {
+            steps {
+                sh "npm install"
+            }
+        }
+        stage("build the image") {
+            steps {
+                sh "docker build -t image1 ."
+            }
+        }
+        stage("rename and push the image to dockerhub ") {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'dockerhub') {
+                        sh "docker tag image1 saikumar1817/project-4:mydockerimage"
+                        sh "docker push saikumar1817/project-4:mydockerimage"
+                    }
+                }
+            }
+        }
+        stage("deploy the application") {
+            steps {
+                sh "docker-compose up -d"
+            }
+        }
+
+    }
+}
